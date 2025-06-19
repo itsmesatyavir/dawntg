@@ -7,11 +7,10 @@ from colorama import init, Fore, Style
 import logging
 from datetime import datetime, timezone
 import urllib3
+import base64
 
 init(autoreset=True)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
-import base64
 
 TG_BOT = base64.b64decode("Nzk2MTUzNjUwMTpBQUdkNlM0c2VCRXpDdnRZOHdPRzNROEJvTjVWX1ZlampNVQ==").decode()
 TG_CHANNEL = "@dawntgbot"
@@ -184,10 +183,23 @@ def keep_alive(account, proxy):
 
 def process_account(account, proxies):
     proxy = random.choice(proxies) if proxies else None
+    last_fetch_time = 0
+    last_keep_alive_time = 0
+
     while True:
-        fetch_points(account, proxy)
-        keep_alive(account, proxy)
-        time.sleep(300) #you_can_change_this_time
+        now = time.time()
+
+        # Run keep alive every 5 minutes
+        if now - last_keep_alive_time >= 300:
+            keep_alive(account, proxy)
+            last_keep_alive_time = now
+
+        # Run points fetch every 10 minutes
+        if now - last_fetch_time >= 600:
+            fetch_points(account, proxy)
+            last_fetch_time = now
+
+        time.sleep(5)  # avoid CPU overuse
 
 
 def main():

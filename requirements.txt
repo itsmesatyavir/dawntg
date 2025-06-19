@@ -1,0 +1,4 @@
+requests[socks]
+colorama
+urllib3
+requests

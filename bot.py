@@ -187,7 +187,7 @@ def process_account(account, proxies):
     while True:
         fetch_points(account, proxy)
         keep_alive(account, proxy)
-        time.sleep(10)
+        time.sleep(300) #you_can_change_this_time
 
 
 def main():
